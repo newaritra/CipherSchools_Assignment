@@ -1,55 +1,48 @@
-class KthSmallst 
-{ 
-	int kthSmallest(int arr[], int l, int r, int k) 
-	{ 
-		if (k > 0 && k <= r - l + 1) 
-		{ 
-			int pos = randomPartition(arr, l, r); 
-			if (pos-l == k-1) 
-				return arr[pos]; 
-			if (pos-l > k-1) 
-				return kthSmallest(arr, l, pos-1, k); 
-			return kthSmallest(arr, pos+1, r, k-pos+l-1); 
-		} 
+public class KsmallestElements {
+    
+    void smallestElements(int[] arr, int k) {
+        int[] small = new int[k];
 
-		return Integer.MAX_VALUE; 
-	} 
+        for(int i=0; i<k; i++) {
+            small[i] = arr[i];
+        }
+        int[] position = new int[2];
+        position = max(arr);
+        for(int i=k; i<arr.length; i++) {
+            if(position[1]>arr[i]) {
+                for(int j=position[0]; j<small.length-1; j++) {
+                    small[j] = small[j+1];
+                }
+                small[small.length - 1] = arr[i];
+                position = max(small);
+            }
+        }
+        
+        for(int x: small) {
+            System.out.print(x + " ");
+        }
+    }
 
-	void swap(int arr[], int i, int j) 
-	{ 
-		int temp = arr[i]; 
-		arr[i] = arr[j]; 
-		arr[j] = temp; 
-	} 
+    int[] max(int[] arr) {
+        int pos = 0;
+        int max = arr[0];
+        for(int i=1; i<arr.length; i++) {
+            if(max<arr[i]) {
+                max = arr[i];
+                pos = i;
+            }
+        } 
+        int[] position = {pos, max}; 
+        return position;
+    }
 
-	int partition(int arr[], int l, int r) 
-	{ 
-		int x = arr[r], i = l; 
-		for (int j = l; j <= r - 1; j++) 
-		{ 
-			if (arr[j] <= x) 
-			{ 
-				swap(arr, i, j); 
-				i++; 
-			} 
-		} 
-		swap(arr, i, r); 
-		return i; 
-	} 
-	int randomPartition(int arr[], int l, int r) 
-	{ 
-		int n = r-l+1; 
-		int pivot = (int)(Math.random()) * (n-1); 
-		swap(arr, l + pivot, r); 
-		return partition(arr, l, r); 
-	} 
+    
+    public static void main(String[] args) {
+        int arr[] = {4, 2, 6, 1, 5};
+        int k = 3;
+        KsmallestElements ob = new KsmallestElements();
 
-	public static void main(String args[]) 
-	{ 
-		KthSmallst ob = new KthSmallst(); 
-		int arr[] = {12, 3, 5, 7, 4, 19, 26}; 
-		int n = arr.length,k = 3; 
-		System.out.println("K'th smallest element is "+ 
-						ob.kthSmallest(arr, 0, n-1, k)); 
-	} 
+        ob.smallestElements(arr, k);
+
+    }
 }
